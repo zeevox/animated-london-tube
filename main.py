@@ -3,9 +3,9 @@
 import string
 import tube
 from pprint import pprint
-from collections import defaultdict
 import os
 import glob
+import collections
 
 
 def clear_dir(dirname):
@@ -17,13 +17,15 @@ def clear_dir(dirname):
 global count
 count = 0
 
+
 def draw_frame():
     global count
     count += 1
     tube_map.output_svg(f"out/frames/{count:05}.svg")
 
+
 def dijkstra(graph, source, target):
-    if source not in graph.nodes :
+    if source not in graph.nodes:
         raise ValueError(f"{source} is not a station")
     elif target not in graph.nodes:
         raise ValueError(f"{target} is not a station")
@@ -33,8 +35,8 @@ def dijkstra(graph, source, target):
     tube_map.hide_all_stations()
 
     vertices = set(graph.nodes)
-    dist = defaultdict(lambda:float('inf'))
-    prev = defaultdict(str)
+    dist = collections.defaultdict(lambda: float('inf'))
+    prev = collections.defaultdict(str)
 
     dist[source] = 0
     while vertices:
@@ -43,7 +45,7 @@ def dijkstra(graph, source, target):
 
         tube_map.show_station(u)
         draw_frame()
-        
+
         if u == target:
             path = []
 
@@ -58,8 +60,12 @@ def dijkstra(graph, source, target):
 
                 tube_map.set_station_opacity(u, 1.0)
                 draw_frame()
+
+            tube_map.set_station_opacity(source, 1.0)
+            for _ in range(10):
+                draw_frame()
             return dist[target], path[::-1]
-        
+
         for v in graph.adj[u]:
             if v not in vertices:
                 continue
@@ -68,6 +74,60 @@ def dijkstra(graph, source, target):
                 dist[v] = alt
                 prev[v] = u
     return None, None
+
+
+def naive(graph, source, target, algo='dfs'):
+    clear_dir("out/frames")
+
+    tube_map.hide_all_stations()
+
+    q = collections.deque()
+    q.append(source)
+
+    visited = set()
+
+    prev = collections.defaultdict(str)
+    while len(q) > 0:
+        if algo == 'bfs':
+            u = q.popleft()
+        elif algo == 'dfs':
+            u = q.pop()
+        else:
+            raise NotImplementedError(
+                f"{algo} search algorithm is not implemented. please try bfs or dfs isntead.")
+
+        visited.add(u)
+
+        if u == target:
+            path = []
+
+            for station in visited:
+                tube_map.set_station_opacity(station, 0.25)
+            tube_map.set_station_opacity(target, 1.0)
+            draw_frame()
+
+            while u in prev:
+                path.append(u)
+                u = prev[u]
+
+                tube_map.set_station_opacity(u, 1.0)
+                draw_frame()
+
+            tube_map.set_station_opacity(source, 1.0)
+            for _ in range(10):
+                draw_frame()
+
+            return path[::-1]
+
+        for v in graph.adj[u]:
+            if v in visited or v in q:
+                continue
+
+            q.append(v)
+            prev[v] = u
+
+            tube_map.show_station(v)
+            draw_frame()
 
 
 def asciify(s):
@@ -88,19 +148,22 @@ def draw_shortest_path(station_a, station_b):
 
 
 def find_longest_shortest_path():
+    import networkx as nx
     lengths = dict(nx.all_pairs_dijkstra(tube_map.graph, weight='weight'))
-    longest = [None, None, -1]
+    longest = []
     for source in lengths.keys():
         furthest = list(lengths[source][0].items())[-1]
-        if furthest[1] > longest[2]:
-            longest = [source, furthest[0], furthest[1]]
-    pprint(longest)
+        longest.append((source, furthest[0], furthest[1]))
+    return list(sorted(longest, key=lambda x: x[2]))
 
 
 if __name__ == "__main__":
     tube_map = tube.TubeMap()
-    dist, path = dijkstra(tube_map.as_graph(), "HEATHROW TERMINAL 4", "MILL HILL EAST")
-    pprint(path)
-    tube_map.output_svg("out/test.svg")
 
-    #draw_shortest_path("Morden", "Heathrow Terminal 5")
+    station_a, station_b = "AMERSHAM", "UPMINSTER"
+
+    dist, path = dijkstra(tube_map.as_graph(), station_a, station_b)
+    pprint(path)
+
+    path = naive(tube_map.as_graph(), station_a, station_b, algo='bfs')
+    pprint(path)
