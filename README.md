@@ -4,11 +4,17 @@ The tube map is an excellent way of explaining pathfinding algorithms. In fact, 
 
 This project aims to visualise algorithms such as BFS, DFS, Dijkstra and A* using the tube map.
 
-[![How do travel planners work? on YouTube by Timothy Langer](https://img.youtube.com/vi/wLNai11U2tI/0.jpg)](https://www.youtube.com/watch?v=wLNai11U2tI)
+### Video
+
+[<img src="https://camo.githubusercontent.com/5428ebbe7210ae0fa8aff6965ac987aea2ebc5c91beaad1b7708e47fd45d5792/68747470733a2f2f692e7974696d672e636f6d2f76695f776562702f774c4e61693131553274492f6d617872657364656661756c742e77656270" alt="How do travel planners work? on YouTube by Timothy Langer" data-canonical-src="https://i.ytimg.com/vi_webp/wLNai11U2tI/maxresdefault.webp" width="50%">](https://www.youtube.com/watch?v=wLNai11U2tI)
 
 Press the thumbnail above to view the final video on YouTube, or [click here.](https://www.youtube.com/watch?v=wLNai11U2tI)</small>
 
-### The internals
+### Thorough write-up
+
+For a detailed explanation of what this project was all about and how I did it, please see [my blog post](https://zeevox.net/wordpress/2021/07/animating-the-london-tube-map/).
+
+### Brief overview
 
 I converted the [official tube map provided by TfL](https://content.tfl.gov.uk/standard-tube-map.pdf) into an SVG file and removed clutter such as DLR, Trams and Thameslink that do not belong on a map of the London Underground.
 Next, I individually selected each station in the SVG in Inkscape and gave it a unique ID. In this case, I based the ID off the three-letter station codes that TfL uses.
