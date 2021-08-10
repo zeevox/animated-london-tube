@@ -4,6 +4,10 @@ The tube map is an excellent way of explaining pathfinding algorithms. In fact, 
 
 This project aims to visualise algorithms such as BFS, DFS, Dijkstra and A* using the tube map.
 
+[![How do travel planners work? on YouTube by Timothy Langer](https://img.youtube.com/vi/wLNai11U2tI/0.jpg)](https://www.youtube.com/watch?v=wLNai11U2tI)
+
+Press the thumbnail above to view the final video on YouTube, or [click here.](https://www.youtube.com/watch?v=wLNai11U2tI)</small>
+
 ### The internals
 
 I converted the [official tube map provided by TfL](https://content.tfl.gov.uk/standard-tube-map.pdf) into an SVG file and removed clutter such as DLR, Trams and Thameslink that do not belong on a map of the London Underground.
